@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::io::{self, BufRead, Write};
 use std::str::FromStr;
 
@@ -22,14 +21,12 @@ fn main() {
     let alaraja: usize = kysy("Anna alueen alaraja");
     let ylaraja: usize = kysy("Anna alueen yläraja");
 
-    let mut alkuluvut = vec![true; ylaraja + 1];
-    let mut tekijat = HashMap::with_capacity(ylaraja / 20);
+    let mut tekija = vec![0; ylaraja + 1];
 
     for i in (2usize..).take_while(|x| x * x <= ylaraja) {
-        if alkuluvut[i] {
+        if tekija[i] == 0 {
             for j in (0..).map(|x| i * i + x * i).take_while(|x| x <= &ylaraja) {
-                alkuluvut[j] = false;
-                tekijat.insert(j, (i, j / i));
+                tekija[j] = i;
             }
         }
     }
@@ -39,12 +36,11 @@ fn main() {
         print!("{} ", i);
         if i < 2 {
             println!("ei ole kelvollinen alkuluku.");
-        } else if alkuluvut[i] {
+        } else if tekija[i] == 0 {
             println!("on alkuluku.");
             viimeinen = i;
         } else {
-            let (n, m) = tekijat.get(&i).unwrap();
-            println!("ei ole alkuluku, koska {} * {} = {}", n, m, i);
+            println!("ei ole alkuluku, koska {} * {} = {}", tekija[i], i / tekija[i], i);
         }
     }
 
