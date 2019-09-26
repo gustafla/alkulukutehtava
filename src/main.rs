@@ -2,7 +2,7 @@ use std::io::{self, BufRead, Write};
 use std::str::FromStr;
 use std::collections::HashMap;
 
-fn kysy_luku<T: FromStr>(kysymys: &str) -> T {
+fn kysy<T: FromStr>(kysymys: &str) -> T {
     let mut input = String::new();
     let stdin = io::stdin();
     let mut stdout = io::stdout();
@@ -10,7 +10,7 @@ fn kysy_luku<T: FromStr>(kysymys: &str) -> T {
         print!("{}: ", kysymys);
         stdout.flush().unwrap();
         stdin.lock().read_line(&mut input).unwrap();
-        match input.trim().parse::<T>() {
+        match input.trim().parse() {
             Ok(val) => return val,
             Err(_) => println!("Virheellinen syöte, yritä uudelleen"),
         }
@@ -19,8 +19,8 @@ fn kysy_luku<T: FromStr>(kysymys: &str) -> T {
 }
 
 fn main() {
-    let alaraja: usize = kysy_luku("Anna alueen alaraja");
-    let ylaraja: usize = kysy_luku("Anna alueen yläraja");
+    let alaraja: usize = kysy("Anna alueen alaraja");
+    let ylaraja: usize = kysy("Anna alueen yläraja");
 
     // TODO could possibly use only a map
     let mut alkuluvut = vec![true; ylaraja + 1];
