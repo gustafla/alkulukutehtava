@@ -1,5 +1,6 @@
 use std::io::{self, BufRead, Write};
 use std::str::FromStr;
+use std::collections::HashMap;
 
 fn kysy_luku<T: FromStr>(kysymys: &str) -> T {
     let mut input = String::new();
@@ -21,28 +22,32 @@ fn main() {
     let alaraja: usize = kysy_luku("Anna alueen alaraja");
     let ylaraja: usize = kysy_luku("Anna alueen yläraja");
 
+    // TODO could possibly use only a map
     let mut alkuluvut = vec![true; ylaraja + 1];
-    let mut tekijat = vec![(0, 0); ylaraja + 1];
-    alkuluvut[1] = false;
+    let mut tekijat = HashMap::with_capacity(ylaraja / 20);
 
     for i in (2usize..).take_while(|x| x * x <= ylaraja) {
         if alkuluvut[i] {
-            for (j, m) in (0..).map(|x| (i * i + x * i, x)).take_while(|(x, _)| x <= &ylaraja) {
+                for j in (0..).map(|x| i * i + x * i).take_while(|x| x <= &ylaraja) {
                 alkuluvut[j] = false;
-                tekijat[j] = (i, m); //?
+                tekijat.insert(j, (i, j/i));
             }
         }
     }
 
-    for i in alaraja..ylaraja {
+    for i in alaraja..ylaraja+1 {
         print!("{} ", i);
         if alkuluvut[i] {
             println!("on alkuluku.");
         } else {
-            if i == 1 {
+            if i < 2 {
                 println!("ei ole kelvollinen alkuluku.");
             } else {
-                let (n, m) = tekijat[i];
+                let (n, m) = tekijat.get(&i).unwrap();
+                if cfg!(debug_assertions) {
+                    assert_eq!(n * m, i);
+                    print!("Assertion passed");
+                }
                 println!("ei ole alkuluku, koska {} * {} = {}", n, m, i);
             }
         }
