@@ -22,12 +22,14 @@ fn main() {
     let ylaraja: usize = kysy_luku("Anna alueen yläraja");
 
     let mut alkuluvut = vec![true; ylaraja + 1];
+    let mut tekijat = vec![(0, 0); ylaraja + 1];
     alkuluvut[1] = false;
 
     for i in (2usize..).take_while(|x| x * x <= ylaraja) {
         if alkuluvut[i] {
-            for j in (0..).map(|x| i * i + x * i).take_while(|x| x <= &ylaraja) {
+            for (j, m) in (0..).map(|x| (i * i + x * i, x)).take_while(|(x, _)| x <= &ylaraja) {
                 alkuluvut[j] = false;
+                tekijat[j] = (i, m); //?
             }
         }
     }
@@ -37,7 +39,12 @@ fn main() {
         if alkuluvut[i] {
             println!("on alkuluku.");
         } else {
-            println!("ei ole alkuluku.");
+            if i == 1 {
+                println!("ei ole kelvollinen alkuluku.");
+            } else {
+                let (n, m) = tekijat[i];
+                println!("ei ole alkuluku, koska {} * {} = {}", n, m, i);
+            }
         }
     }
 
