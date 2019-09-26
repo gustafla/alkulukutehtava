@@ -35,22 +35,26 @@ fn main() {
         }
     }
 
+    let mut viimeinen = 0;
     for i in alaraja..ylaraja+1 {
         print!("{} ", i);
-        if alkuluvut[i] {
+        if i < 2 {
+            println!("ei ole kelvollinen alkuluku.");
+        } else if alkuluvut[i] {
             println!("on alkuluku.");
+            viimeinen = i;
         } else {
-            if i < 2 {
-                println!("ei ole kelvollinen alkuluku.");
-            } else {
-                let (n, m) = tekijat.get(&i).unwrap();
-                if cfg!(debug_assertions) {
-                    assert_eq!(n * m, i);
-                    print!("Assertion passed");
-                }
-                println!("ei ole alkuluku, koska {} * {} = {}", n, m, i);
+            let (n, m) = tekijat.get(&i).unwrap();
+            if cfg!(debug_assertions) {
+                assert_eq!(n * m, i);
+                print!("Assertion passed");
             }
+            println!("ei ole alkuluku, koska {} * {} = {}", n, m, i);
         }
+    }
+
+    if viimeinen != 0 {
+        println!("Viimeinen löydetty alkuluku oli {}", viimeinen);
     }
 
     println!("Kiitos ohjelman käytöstä.");
